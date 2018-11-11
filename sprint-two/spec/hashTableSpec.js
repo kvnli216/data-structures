@@ -1,45 +1,45 @@
-describe('hashTable', function() {
+describe('hashTable', function () {
   var hashTable;
   var people = [['Steven', 'Tyler'], ['George', 'Harrison'], ['Mr.', 'Doob'], ['Dr.', 'Sunshine'], ['John', 'Resig'], ['Brendan', 'Eich'], ['Alan', 'Turing']];
 
 
-  beforeEach(function() {
+  beforeEach(function () {
     hashTable = new HashTable();
   });
 
-  it('should have methods named "insert", "remove", and "retrieve', function() {
+  it('should have methods named "insert", "remove", and "retrieve', function () {
     expect(hashTable.insert).to.be.a('function');
     expect(hashTable.remove).to.be.a('function');
     expect(hashTable.retrieve).to.be.a('function');
   });
 
-  it('should store values that were inserted', function() {
+  it('should store values that were inserted', function () {
     hashTable.insert('Steven', 'Seagal');
     expect(hashTable.retrieve('Steven')).to.equal('Seagal');
   });
 
-  it('should not contain values that were not inserted', function() {
+  it('should not contain values that were not inserted', function () {
     hashTable.insert('Steven', 'Spielberg');
     expect(hashTable.retrieve('Steven')).not.to.equal('Seagal');
   });
 
-  it('should overwrite values that have the same key', function() {
+  it('should overwrite values that have the same key', function () {
     hashTable.insert('Bob', 'Loblaw');
     hashTable.insert('Bob', 'Barker');
     expect(hashTable.retrieve('Bob')).to.equal('Barker');
   });
 
-  it('should not contain values that were removed', function() {
+  it('should not contain values that were removed', function () {
     hashTable.insert('Steven', 'Tyler');
     hashTable.remove('Steven');
     expect(hashTable.retrieve('Steven')).to.equal(undefined);
   });
 
-  it('should handle hash function collisions', function() {
+  it('should handle hash function collisions', function () {
     var v1 = 'val1';
     var v2 = 'val2';
     var oldHashFunction = window.getIndexBelowMaxForKey;
-    window.getIndexBelowMaxForKey = function() { return 0; };
+    window.getIndexBelowMaxForKey = function () { return 0; };
     hashTable.insert(v1, v1);
     hashTable.insert(v2, v2);
     expect(hashTable.retrieve(v1)).to.equal(v1);
@@ -47,9 +47,19 @@ describe('hashTable', function() {
     window.getIndexBelowMaxForKey = oldHashFunction;
   });
 
+  it('should have method named getSize', function () {
+    expect(hashTable.getSize).to.be.a('function');
+  });
+
+  it('should return number of nodes', function () {
+    hashTable.insert('Bob', 'Loblaw');
+    hashTable.insert('Dan', 'Barker');
+    expect(hashTable.getSize()).to.equal(2);
+  });
+
   // (Advanced! Remove the extra "x" when you want the following tests to run)
-  xit ('should double in size when needed', function() {
-    _.each(people, function(person) {
+  xit('should double in size when needed', function () {
+    _.each(people, function (person) {
       var firstName = person[0];
       var lastName = person[1];
       hashTable.insert(firstName, lastName);
@@ -58,8 +68,8 @@ describe('hashTable', function() {
     expect(hashTable._limit).to.equal(16);
   });
 
-  xit ('should halve in size when needed', function() {
-    _.each(people, function(person) {
+  xit('should halve in size when needed', function () {
+    _.each(people, function (person) {
       var firstName = person[0];
       var lastName = person[1];
       hashTable.insert(firstName, lastName);
@@ -72,5 +82,23 @@ describe('hashTable', function() {
     hashTable.remove('John');
     hashTable.remove('Mr.');
     expect(hashTable._limit).to.equal(8);
+  });
+
+  // Custom resizing tests
+  it('should double size of hashTable when needed', function () {
+    // for (let i = 0; i < 7; i++) {
+    //   hashTable._storage.set(getIndexBelowMaxForKey(`key#${i}`, 8), [['myKey', 25]]);
+    // }
+    hashTable._storage.set(getIndexBelowMaxForKey(`key1`, 8), [['key1', 25]]);
+    hashTable._storage.set(getIndexBelowMaxForKey(`key2`, 8), [['key2', 25]]);
+    hashTable._storage.set(getIndexBelowMaxForKey(`key3`, 8), [['key3', 25]]);
+    hashTable._storage.set(getIndexBelowMaxForKey(`key4`, 8), [['key4', 25]]);
+    hashTable._storage.set(getIndexBelowMaxForKey(`key5`, 8), [['key5', 25]]);
+    hashTable._storage.set(getIndexBelowMaxForKey(`key6`, 8), [['key6', 25]]);
+    hashTable._storage.set(getIndexBelowMaxForKey(`key7`, 8), [['key7', 25]]);
+    hashTable.insert('Kevin', 1);
+    let storageSize = 0;
+    hashTable._storage.each(bucket => storageSize++);
+    expect(storageSize).to.equal(16);
   });
 });

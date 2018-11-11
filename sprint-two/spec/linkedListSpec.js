@@ -52,4 +52,15 @@ describe('linkedList', function() {
   });
 
   // add more tests here to test the functionality of linkedList
+  it('should contain a method find', function() {
+    expect(linkedList).to.have.property('find');
+  }); 
+
+  it('should correctly find the node of interest', function() {
+    linkedList.addToTail(1);
+    linkedList.addToTail(2);
+    linkedList.find(2);
+    let targetNode = linkedList.find(2);
+    expect(linkedList.find(2).value).to.equal(targetNode.value);
+  }); 
 });

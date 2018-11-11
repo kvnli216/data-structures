@@ -24,4 +24,19 @@ describe('set', function() {
     expect(set.contains('Mel Gibson')).to.equal(false);
   });
 
+  it('should have a method named getSize', function() {
+    expect(set.getSize).to.be.a('function');
+  });
+
+  it('should return the number of elements in the set', function() {
+    set.add('M2l Gibson');
+    set.add('M3l Gibson');
+    set.add('M4l Gibson');
+    expect(set.getSize()).to.equal(3);
+  });
+
+  // it('should', function() {
+
+  //   // expect(set.METHOD()).to.equal();
+  // });
 });
